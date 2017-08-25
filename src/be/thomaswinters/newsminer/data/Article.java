@@ -2,12 +2,23 @@ package be.thomaswinters.newsminer.data;
 
 import java.net.URL;
 
-public class Article extends Headline implements IArticle {
+public class Article implements IArticle {
+	private final URL url;
+	private final String headline;
 	private final String text;
 
 	public Article(URL url, String headline, String text) {
-		super(url, headline);
+		this.url = url;
+		this.headline = headline;
 		this.text = text;
+	}
+
+	public URL getUrl() {
+		return url;
+	}
+
+	public String getHeadline() {
+		return headline;
 	}
 
 	public String getText() {

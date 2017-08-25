@@ -9,19 +9,28 @@ import java.util.stream.Collectors;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import be.thomaswinters.newsminer.data.IHeadline;
+import be.thomaswinters.newsminer.data.IArticle;
 import be.thomaswinters.newsminer.partial.APartialNewsRetriever;
 
 public class VrtNwsRetriever extends APartialNewsRetriever {
-	public VrtNwsRetriever() throws MalformedURLException {
-		super("https://www.vrt.be/vrtnws/nl/", new URL("https://www.vrt.be/"));
+	private final static URL BASE_URL;
+	static {
+		try {
+			BASE_URL = new URL("https://www.vrt.be/");
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public VrtNwsRetriever() {
+		super("https://www.vrt.be/vrtnws/nl/", BASE_URL);
 	}
 
 	@Override
-	protected Collection<IHeadline> retrieveHeadlineAnchorElements(Document doc) throws IOException {
+	protected Collection<IArticle> retrieveHeadlineAnchorElements(Document doc) throws IOException {
 		return doc.select(".page-article a").stream()
 				// Create headliner object
-				.map(e -> toHeadline(e.attr("href"), e.select("h2").text()))
+				.map(e -> toPartialArticle(e.attr("href"), e.select("h2").text()))
 				// Collect to list
 				.collect(Collectors.toList());
 	}

@@ -5,28 +5,29 @@ import java.net.URL;
 import java.util.Optional;
 
 import be.thomaswinters.newsminer.data.IArticle;
-import be.thomaswinters.newsminer.data.IHeadline;
 
 public class PartialArticle implements IArticle {
 
-	private final IHeadline headline;
+	private final URL articleURL;
+	private final String headline;
 	private Optional<String> text;
 	private IArticleTextLoader loader;
 
-	public PartialArticle(IHeadline headline, IArticleTextLoader loader) {
+	public PartialArticle(URL articleUrl, String headline, APartialNewsRetriever aPartialNewsRetriever) {
+		this.articleURL = articleUrl;
 		this.headline = headline;
-		this.loader = loader;
+		this.loader = aPartialNewsRetriever;
 		this.text = Optional.empty();
 	}
 
 	@Override
 	public URL getUrl() {
-		return headline.getUrl();
+		return articleURL;
 	}
 
 	@Override
 	public String getHeadline() {
-		return headline.getHeadline();
+		return headline;
 	}
 
 	@Override
@@ -43,17 +44,17 @@ public class PartialArticle implements IArticle {
 
 	@Override
 	public String toString() {
-		return "PartialArticle:\n" + headline.getUrl() + ",\n" + headline.getHeadline() + "\n" + text + "\n\n";
+		return "PartialArticle:\n" + articleURL + ",\n" + headline + "\n" + text + "\n\n";
 	}
 
 	/*-********************************************-*
 	 *  Hashcode and equals
 	*-********************************************-*/
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((articleURL == null) ? 0 : articleURL.hashCode());
 		result = prime * result + ((headline == null) ? 0 : headline.hashCode());
 		result = prime * result + ((loader == null) ? 0 : loader.hashCode());
 		result = prime * result + ((text == null) ? 0 : text.hashCode());
@@ -69,6 +70,11 @@ public class PartialArticle implements IArticle {
 		if (getClass() != obj.getClass())
 			return false;
 		PartialArticle other = (PartialArticle) obj;
+		if (articleURL == null) {
+			if (other.articleURL != null)
+				return false;
+		} else if (!articleURL.equals(other.articleURL))
+			return false;
 		if (headline == null) {
 			if (other.headline != null)
 				return false;
@@ -86,6 +92,7 @@ public class PartialArticle implements IArticle {
 			return false;
 		return true;
 	}
+
 	/*-********************************************-*/
 
 }

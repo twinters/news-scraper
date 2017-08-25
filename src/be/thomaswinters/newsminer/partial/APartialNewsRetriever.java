@@ -4,16 +4,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import be.thomaswinters.newsminer.INewsRetriever;
-import be.thomaswinters.newsminer.data.Headline;
 import be.thomaswinters.newsminer.data.IArticle;
-import be.thomaswinters.newsminer.data.IHeadline;
 
 public abstract class APartialNewsRetriever implements INewsRetriever, IArticleTextLoader {
 
@@ -42,16 +39,12 @@ public abstract class APartialNewsRetriever implements INewsRetriever, IArticleT
 	public Collection<IArticle> mineArticles() throws IOException {
 		Document doc = Jsoup.connect(frontPageUrl).get();
 
-		return retrieveHeadlineAnchorElements(doc).stream().map(this::toPartialArticle).collect(Collectors.toList());
+		return retrieveHeadlineAnchorElements(doc);
 	}
 
-	protected IArticle toPartialArticle(IHeadline headline) {
-		return new PartialArticle(headline, this);
-	}
-
-	protected Headline toHeadline(String relativeUrl, String headline) {
+	protected PartialArticle toPartialArticle(String relativeUrl, String headline) {
 		try {
-			return new Headline(new URL(baseUrl, relativeUrl), headline);
+			return new PartialArticle(new URL(baseUrl, relativeUrl), headline, this);
 		} catch (MalformedURLException e1) {
 			throw new RuntimeException(e1);
 		}
@@ -73,7 +66,7 @@ public abstract class APartialNewsRetriever implements INewsRetriever, IArticleT
 
 	/*-********************************************-*/
 
-	protected abstract Collection<IHeadline> retrieveHeadlineAnchorElements(Document doc) throws IOException;
+	protected abstract Collection<IArticle> retrieveHeadlineAnchorElements(Document doc) throws IOException;
 
 	protected abstract Elements retrieveNewsParagraphElements(Document doc) throws IOException;
 
