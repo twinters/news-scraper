@@ -1,38 +1,32 @@
 package be.thomaswinters.newsminer.partial;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
 import be.thomaswinters.newsminer.data.IArticle;
+import be.thomaswinters.newsminer.data.IHeadline;
 
 public class PartialArticle implements IArticle {
 
-	private final URL url;
-	private final String headline;
+	private final IHeadline headline;
 	private Optional<String> text;
 	private IArticleTextLoader loader;
 
-	public PartialArticle(URL url, String headline, IArticleTextLoader loader) {
-		this.url = url;
+	public PartialArticle(IHeadline headline, IArticleTextLoader loader) {
 		this.headline = headline;
 		this.loader = loader;
 		this.text = Optional.empty();
 	}
 
-	public PartialArticle(String url, String headline, IArticleTextLoader loader) throws MalformedURLException {
-		this(new URL(url), headline, loader);
-	}
-
 	@Override
 	public URL getUrl() {
-		return url;
+		return headline.getUrl();
 	}
 
 	@Override
 	public String getHeadline() {
-		return headline;
+		return headline.getHeadline();
 	}
 
 	@Override
@@ -49,16 +43,20 @@ public class PartialArticle implements IArticle {
 
 	@Override
 	public String toString() {
-		return "PartialArticle:\n" + url + ",\n" + headline + "\n" + text + "\n\n";
+		return "PartialArticle:\n" + headline.getUrl() + ",\n" + headline.getHeadline() + "\n" + text + "\n\n";
 	}
+
+	/*-********************************************-*
+	 *  Hashcode and equals
+	*-********************************************-*/
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((headline == null) ? 0 : headline.hashCode());
+		result = prime * result + ((loader == null) ? 0 : loader.hashCode());
 		result = prime * result + ((text == null) ? 0 : text.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}
 
@@ -76,17 +74,18 @@ public class PartialArticle implements IArticle {
 				return false;
 		} else if (!headline.equals(other.headline))
 			return false;
+		if (loader == null) {
+			if (other.loader != null)
+				return false;
+		} else if (!loader.equals(other.loader))
+			return false;
 		if (text == null) {
 			if (other.text != null)
 				return false;
 		} else if (!text.equals(other.text))
 			return false;
-		if (url == null) {
-			if (other.url != null)
-				return false;
-		} else if (!url.equals(other.url))
-			return false;
 		return true;
 	}
+	/*-********************************************-*/
 
 }

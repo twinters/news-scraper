@@ -1,12 +1,6 @@
 package be.thomaswinters.newsminer.data;
 
-import java.net.URL;
-
-public interface IArticle {
-
-	URL getUrl();
-
-	String getHeadline();
+public interface IArticle extends IHeadline {
 
 	String getText();
 }
