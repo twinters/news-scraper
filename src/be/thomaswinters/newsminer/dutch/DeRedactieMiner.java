@@ -1,4 +1,4 @@
-package be.thomaswinters.newsminer;
+package be.thomaswinters.newsminer.dutch;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -11,9 +11,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import be.thomaswinters.newsminer.INewsMiner;
 import be.thomaswinters.newsminer.data.IArticle;
-import be.thomaswinters.newsminer.data.PartialArticle;
+import be.thomaswinters.newsminer.partial.IArticleTextLoader;
+import be.thomaswinters.newsminer.partial.PartialArticle;
 
+@Deprecated
 public class DeRedactieMiner implements INewsMiner {
 	private static final String FRONT_PAGE = "http://deredactie.be/cm/vrtnieuws";
 	private static final URL BASE_URL;
@@ -27,7 +30,7 @@ public class DeRedactieMiner implements INewsMiner {
 		BASE_URL = intermediate;
 	}
 
-	private static final IArticleTextLoader LOADER = new DeRedactieArticleLoader();
+	private static final IArticleTextLoader LOADER = new DeRedactieArticleTextLoader();
 
 	@Override
 	public Collection<IArticle> mineArticles() throws IOException {
@@ -47,5 +50,20 @@ public class DeRedactieMiner implements INewsMiner {
 
 	public static void main(String[] args) throws IOException {
 		System.out.println(new DeRedactieMiner().mineArticles());
+	}
+
+	@Deprecated
+	public static class DeRedactieArticleTextLoader implements IArticleTextLoader {
+
+		@Override
+		public String loadArticleText(URL url) throws IOException {
+			StringBuilder text = new StringBuilder();
+			Document doc = Jsoup.connect(url.toExternalForm()).get();
+			Elements articles = doc.select(".articlecontent");
+
+			articles.forEach(e -> text.append(e.text() + "\n"));
+			return text.toString();
+		}
+
 	}
 }

@@ -1,11 +1,11 @@
-package be.thomaswinters.newsminer.data;
+package be.thomaswinters.newsminer.partial;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
-import be.thomaswinters.newsminer.IArticleTextLoader;
+import be.thomaswinters.newsminer.data.IArticle;
 
 public class PartialArticle implements IArticle {
 
@@ -49,7 +49,7 @@ public class PartialArticle implements IArticle {
 
 	@Override
 	public String toString() {
-		return "PartialArticle:\n" + url + ",\n" + headline + "\n" + getText() + "\n\n";
+		return "PartialArticle:\n" + url + ",\n" + headline + "\n" + text + "\n\n";
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package be.thomaswinters.newsminer;
+package be.thomaswinters.newsminer.partial;
 
 import java.io.IOException;
 import java.net.URL;
