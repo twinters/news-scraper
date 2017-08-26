@@ -30,9 +30,11 @@ public class VrtNwsRetriever extends APartialNewsRetriever {
 	protected Collection<IArticle> retrieveHeadlineAnchorElements(Document doc) throws IOException {
 		return doc.select(".page-article a").stream()
 				// Create headliner object
-				.map(e -> toPartialArticle(e.attr("href"), e.select("h2").text()))
+				.map(e -> toPartialArticle(e.attr("href"), e.select("h2").first().text()))
+				// Filter out non-articles by getting one whose url starts with a digit (for the date)
+				.filter(e->e.getUrl().getPath().matches("/vrtnws/nl/\\d.*"))
 				// Collect to list
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet());
 	}
 
 	@Override
@@ -41,7 +43,7 @@ public class VrtNwsRetriever extends APartialNewsRetriever {
 	}
 
 	public static void main(String[] args) throws IOException {
-		System.out.println(new VrtNwsRetriever().mineArticles().stream().map(e -> e.toString())
+		System.out.println(new VrtNwsRetriever().retrieveArticles().stream().map(e -> e.toString())
 				.collect(Collectors.joining("\n\n\n\n\n\n")));
 	}
 }

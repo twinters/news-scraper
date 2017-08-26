@@ -36,7 +36,7 @@ public abstract class APartialNewsRetriever implements INewsRetriever, IArticleT
 	 *  Mining articles
 	*-********************************************-*/
 	@Override
-	public Collection<IArticle> mineArticles() throws IOException {
+	public Collection<IArticle> retrieveArticles() throws IOException {
 		Document doc = Jsoup.connect(frontPageUrl).get();
 
 		return retrieveHeadlineAnchorElements(doc);
@@ -55,7 +55,7 @@ public abstract class APartialNewsRetriever implements INewsRetriever, IArticleT
 	 *  Text Loader
 	*-********************************************-*/
 	@Override
-	public String loadArticleText(URL url) throws IOException {
+	public String retrieveArticleText(URL url) throws IOException {
 		StringBuilder text = new StringBuilder();
 		Document doc = Jsoup.connect(url.toExternalForm()).get();
 		Elements articles = retrieveNewsParagraphElements(doc);

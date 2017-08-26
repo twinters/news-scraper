@@ -34,7 +34,7 @@ public class PartialArticle implements IArticle {
 	public String getText() {
 		if (!text.isPresent()) {
 			try {
-				text = Optional.of(loader.loadArticleText(getUrl()));
+				text = Optional.of(loader.retrieveArticleText(getUrl()));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

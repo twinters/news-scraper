@@ -4,5 +4,5 @@ import java.io.IOException;
 import java.net.URL;
 
 public interface IArticleTextLoader {
-	String loadArticleText(URL url) throws IOException;
+	String retrieveArticleText(URL url) throws IOException;
 }
