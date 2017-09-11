@@ -177,3 +177,5 @@ local.properties
 # Locally stored "Eclipse launch configurations"
 *.launch
 *.class
+.idea/
+Markov.iml
