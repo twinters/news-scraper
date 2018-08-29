@@ -9,6 +9,7 @@ public class ArticleCard {
     private final String title;
     private final URL link;
     private final Supplier<NewsArticle> articleSupplier;
+    private NewsArticle cachedFullArticle = null;
 
     public ArticleCard(String title, URL link, Supplier<NewsArticle> articleSupplier) {
 
@@ -17,17 +18,20 @@ public class ArticleCard {
         this.articleSupplier = articleSupplier;
     }
 
+
     public ArticleCard(String title, URL link, Function<URL, NewsArticle> urlToFullArticleMapper) {
         this(title, link, () -> urlToFullArticleMapper.apply(link));
     }
-
 
     public URL getLink() {
         return link;
     }
 
-    public Supplier<NewsArticle> getArticleSupplier() {
-        return articleSupplier;
+    public NewsArticle getFullArticle() {
+        if (cachedFullArticle == null) {
+            cachedFullArticle = articleSupplier.get();
+        }
+        return cachedFullArticle;
     }
 
     public String getTitle() {
