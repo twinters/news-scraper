@@ -62,8 +62,6 @@ public abstract class JsoupNewsRetriever implements INewsRetriever {
     /*-********************************************-*/
 
     protected URL toFullUrl(String link) throws MalformedURLException {
-        System.out.println("BASEURL:" + baseUrl  + " / LINK: " + link);
-
         return new URL(baseUrl, link);
     }
 
