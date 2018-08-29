@@ -1,9 +1,8 @@
-package be.thomaswinters.newsminer.partial;
+package be.thomaswinters.newsminer;
 
 import be.thomaswinters.newsminer.INewsRetriever;
-import be.thomaswinters.newsminer.data.Article;
 import be.thomaswinters.newsminer.data.ArticleCard;
-import be.thomaswinters.newsminer.data.IArticle;
+import be.thomaswinters.newsminer.data.NewsArticle;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -13,7 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 
-public abstract class APartialNewsRetriever implements INewsRetriever, IArticleTextLoader {
+public abstract class JsoupNewsRetriever implements INewsRetriever {
 
     /*-********************************************-*
      *  Variables
@@ -26,7 +25,7 @@ public abstract class APartialNewsRetriever implements INewsRetriever, IArticleT
     /*-********************************************-*
      *  Constructor
      *-********************************************-*/
-    public APartialNewsRetriever(String frontPageUrl, URL baseUrl) {
+    public JsoupNewsRetriever(String frontPageUrl, URL baseUrl) {
         this.frontPageUrl = frontPageUrl;
         this.baseUrl = baseUrl;
     }
@@ -36,54 +35,56 @@ public abstract class APartialNewsRetriever implements INewsRetriever, IArticleT
     /*-********************************************-*
      *  Mining articles
      *-********************************************-*/
-    @Override
-    public Collection<IArticle> retrieveArticles() throws IOException {
-        Document doc = Jsoup.connect(frontPageUrl).get();
-
-        return retrieveHeadlineAnchorElements(doc);
-    }
-
-    protected PartialArticle toPartialArticle(String relativeUrl, String headline) {
-        try {
-            return new PartialArticle(new URL(baseUrl, relativeUrl), headline, this);
-        } catch (MalformedURLException e1) {
-            throw new RuntimeException(e1);
-        }
-    }
 
 
     @Override
     public Collection<ArticleCard> retrieveArticleCards() throws IOException {
-        return null;
+        Document doc = Jsoup.connect(frontPageUrl).get();
+
+        return retrieverArticleCards(doc);
     }
 
     @Override
-    public Collection<Article> retrieveFullArticles() throws IOException {
-        return null;
-    }
-
-    /*-********************************************-*/
-
-    /*-********************************************-*
-     *  Text Loader
-     *-********************************************-*/
-    @Override
-    public String retrieveArticleText(URL url) throws IOException {
+    public NewsArticle retrieveArticle(URL url) throws IOException {
         StringBuilder text = new StringBuilder();
         Document doc = Jsoup
                 .connect(url.toExternalForm())
                 .followRedirects(true)
                 .timeout(60 * 1000)
                 .get();
+
+        String articleTitle = retrieveArticleTitle(doc);
         Elements articles = retrieveNewsParagraphElements(doc);
 
         articles.forEach(e -> text.append(e.text()).append("\n"));
-        return text.toString();
+        return new NewsArticle(articleTitle, url, text.toString());
     }
-
     /*-********************************************-*/
 
-    protected abstract Collection<IArticle> retrieveHeadlineAnchorElements(Document doc) throws IOException;
+    protected URL toFullUrl(String link) throws MalformedURLException {
+        System.out.println("BASEURL:" + baseUrl  + " / LINK: " + link);
+
+        return new URL(baseUrl, link);
+    }
+
+    protected ArticleCard createArticleCard(String link, String title) {
+        try {
+            return new ArticleCard(title, toFullUrl(link), e -> {
+                try {
+                    return retrieveArticle(e);
+                } catch (IOException e1) {
+                    throw new RuntimeException(e1);
+                }
+            });
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    protected abstract Collection<ArticleCard> retrieverArticleCards(Document doc) throws IOException;
+
+    protected abstract String retrieveArticleTitle(Document doc);
 
     protected abstract Elements retrieveNewsParagraphElements(Document doc) throws IOException;
 

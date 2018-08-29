@@ -1,7 +1,8 @@
 package be.thomaswinters.newsminer.dutch;
 
-import be.thomaswinters.newsminer.data.IArticle;
-import be.thomaswinters.newsminer.partial.APartialNewsRetriever;
+import be.thomaswinters.newsminer.INewsRetriever;
+import be.thomaswinters.newsminer.JsoupNewsRetriever;
+import be.thomaswinters.newsminer.data.ArticleCard;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
@@ -11,7 +12,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class VrtNwsRetriever extends APartialNewsRetriever {
+public class VrtNwsRetriever extends JsoupNewsRetriever {
     private final static URL BASE_URL;
 
     static {
@@ -26,24 +27,21 @@ public class VrtNwsRetriever extends APartialNewsRetriever {
         super("https://www.vrt.be/vrtnws/nl/", BASE_URL);
     }
 
-    public static void main(String[] args) throws IOException {
-        System.out.println(
-                new VrtNwsRetriever()
-                        .retrieveArticles()
-                        .stream()
-                        .map(Object::toString)
-                        .collect(Collectors.joining("\n\n\n\n\n\n")));
+
+    @Override
+    protected Collection<ArticleCard> retrieverArticleCards(Document doc) throws IOException {
+        return doc.select(".page-article a").stream()
+                // Create headliner object
+                .map(e -> createArticleCard(e.attr("href"), e.select("h2").first().text()))
+                // Filter out non-articles by getting one whose url starts with a digit (for the date)
+                .filter(e -> e.getLink().getPath().matches("/vrtnws/nl/\\d.*"))
+                // Collect to list
+                .collect(Collectors.toSet());
     }
 
     @Override
-    protected Collection<IArticle> retrieveHeadlineAnchorElements(Document doc) throws IOException {
-        return doc.select(".page-article a").stream()
-                // Create headliner object
-                .map(e -> toPartialArticle(e.attr("href"), e.select("h2").first().text()))
-                // Filter out non-articles by getting one whose url starts with a digit (for the date)
-                .filter(e -> e.getUrl().getPath().matches("/vrtnws/nl/\\d.*"))
-                // Collect to list
-                .collect(Collectors.toSet());
+    protected String retrieveArticleTitle(Document doc) {
+        return doc.select("h1.vrt-title").text();
     }
 
     @Override

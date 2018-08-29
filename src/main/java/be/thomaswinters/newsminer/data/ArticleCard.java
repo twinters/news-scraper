@@ -8,16 +8,16 @@ import java.util.function.Supplier;
 public class ArticleCard {
     private final String title;
     private final URL link;
-    private final Supplier<FullArticle> articleSupplier;
+    private final Supplier<NewsArticle> articleSupplier;
 
-    public ArticleCard(String title, URL link, Supplier<FullArticle> articleSupplier) {
+    public ArticleCard(String title, URL link, Supplier<NewsArticle> articleSupplier) {
 
         this.title = title;
         this.link = link;
         this.articleSupplier = articleSupplier;
     }
 
-    public ArticleCard(String title, URL link, Function<URL, FullArticle> urlToFullArticleMapper) {
+    public ArticleCard(String title, URL link, Function<URL, NewsArticle> urlToFullArticleMapper) {
         this(title, link, () -> urlToFullArticleMapper.apply(link));
     }
 
@@ -26,7 +26,7 @@ public class ArticleCard {
         return link;
     }
 
-    public Supplier<FullArticle> getArticleSupplier() {
+    public Supplier<NewsArticle> getArticleSupplier() {
         return articleSupplier;
     }
 

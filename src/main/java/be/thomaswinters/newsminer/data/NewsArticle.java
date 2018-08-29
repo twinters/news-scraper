@@ -3,12 +3,12 @@ package be.thomaswinters.newsminer.data;
 import java.net.URL;
 import java.util.Objects;
 
-public class FullArticle {
+public class NewsArticle {
     private final String title;
     private final URL link;
     private final String fullText;
 
-    public FullArticle(String title, URL link, String fullText) {
+    public NewsArticle(String title, URL link, String fullText) {
         this.title = title;
         this.link = link;
         this.fullText = fullText;
@@ -19,7 +19,7 @@ public class FullArticle {
         return link;
     }
 
-    public String getFullText() {
+    public String getText() {
         return fullText;
     }
 
@@ -30,7 +30,7 @@ public class FullArticle {
 
     @Override
     public String toString() {
-        return "FullArticle{" +
+        return "NewsArticle{" +
                 "title='" + title + '\'' +
                 ", link=" + link +
                 ", fullText='" + fullText + '\'' +
@@ -41,7 +41,7 @@ public class FullArticle {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FullArticle that = (FullArticle) o;
+        NewsArticle that = (NewsArticle) o;
         return Objects.equals(title, that.title) &&
                 Objects.equals(link, that.link) &&
                 Objects.equals(fullText, that.fullText);
