@@ -1,6 +1,8 @@
 package be.thomaswinters.newsminer.partial;
 
 import be.thomaswinters.newsminer.INewsRetriever;
+import be.thomaswinters.newsminer.data.Article;
+import be.thomaswinters.newsminer.data.ArticleCard;
 import be.thomaswinters.newsminer.data.IArticle;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -48,6 +50,18 @@ public abstract class APartialNewsRetriever implements INewsRetriever, IArticleT
             throw new RuntimeException(e1);
         }
     }
+
+
+    @Override
+    public Collection<ArticleCard> retrieveArticleCards() throws IOException {
+        return null;
+    }
+
+    @Override
+    public Collection<Article> retrieveFullArticles() throws IOException {
+        return null;
+    }
+
     /*-********************************************-*/
 
     /*-********************************************-*
