@@ -7,17 +7,20 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public interface INewsRetriever {
     Collection<ArticleCard> retrieveArticleCards() throws IOException;
 
     NewsArticle retrieveArticle(URL url) throws IOException;
 
+    boolean canRetrieveArticle(URL url);
+
     default NewsArticle retrieveArticle(ArticleCard card) throws IOException {
         return retrieveArticle(card.getLink());
     }
 
-    default Collection<NewsArticle> retrieveFullArticles() throws IOException {
+    default Stream<NewsArticle> retrieveFullArticlesStream() throws IOException {
         return retrieveArticleCards()
                 .stream()
                 .map(card -> {
@@ -26,7 +29,10 @@ public interface INewsRetriever {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                })
+                });
+    }
+    default Collection<NewsArticle> retrieveFullArticles() throws IOException {
+        return retrieveFullArticlesStream()
                 .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,5 @@
 package be.thomaswinters.newsminer;
 
-import be.thomaswinters.newsminer.INewsRetriever;
 import be.thomaswinters.newsminer.data.ArticleCard;
 import be.thomaswinters.newsminer.data.NewsArticle;
 import org.jsoup.Jsoup;
@@ -77,6 +76,11 @@ public abstract class JsoupNewsRetriever implements INewsRetriever {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean canRetrieveArticle(URL url) {
+        return url.getPath().startsWith(baseUrl.getPath());
     }
 
 
