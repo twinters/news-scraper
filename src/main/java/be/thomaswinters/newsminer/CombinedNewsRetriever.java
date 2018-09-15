@@ -21,9 +21,9 @@ public class CombinedNewsRetriever implements INewsRetriever {
     public Collection<ArticleCard> retrieveArticleCards() throws IOException {
         return retrievers.stream().flatMap(e -> {
             try {
-                return e.retrieveArticleCards();
+                return e.retrieveArticleCards().stream();
             } catch (IOException e1) {
-                e1.printStackTrace();
+                throw new RuntimeException(e1);
             }
         }).collect(Collectors.toList());
     }
