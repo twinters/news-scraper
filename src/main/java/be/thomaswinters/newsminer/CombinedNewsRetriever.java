@@ -5,6 +5,7 @@ import be.thomaswinters.newsminer.data.NewsArticle;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,10 @@ public class CombinedNewsRetriever implements INewsRetriever {
 
     public CombinedNewsRetriever(List<INewsRetriever> retrievers) {
         this.retrievers = retrievers;
+    }
+
+    public CombinedNewsRetriever(INewsRetriever... retrievers) {
+        this(Arrays.asList(retrievers));
     }
 
     @Override
